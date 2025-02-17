@@ -27,17 +27,31 @@ public class UserConsoleView extends ConsolePrintHelper implements UserView {
         System.out.println("Choose user mode");
         System.out.println("(1 - Client, 2 - Administrator):");
 
-        int userType = sc.nextInt();
-        sc.nextLine();
-
-        return switch (userType) {
-            case 1 -> "Client";
-            case 2 -> "Administrator";
-            default -> {
-                System.out.println("Invalid choice. Please select 1 or 2.");
-                yield chooseUser();
+        while (true) {
+            var userType = readUserInput();
+            if (userType != null) {
+                return switch (userType) {
+                    case 1 -> "Client";
+                    case 2 -> "Administrator";
+                    default -> throw new IllegalStateException("Unexpected value: " + userType);
+                };
             }
-        };
+        }
     }
+    private Integer readUserInput() {
+        try {
+            int input = Integer.parseInt(sc.nextLine().trim());
+            if (input == 1 || input == 2) {
+                return input;
+            } else {
+                System.out.println("Invalid choice. Please select 1 or 2.");
+                return null;
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter a number (1 or 2).");
+            return null;
+        }
+    }
+
 
 }
